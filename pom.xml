@@ -27,6 +27,11 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.15.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230227</version>
+        </dependency>
 
         <!--sqlite-->
         <dependency>
@@ -38,6 +43,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>6.0.9</version>
+        </dependency>
+        <dependency>
+        <groupId>date</groupId><!--随便填写-->
+        <artifactId>DatePicker</artifactId><!--jar包名字-->
+        <version>0.1.2</version><!--版本号-->
+        <scope>system</scope>
+        <systemPath>${project.basedir}/libs/datepicker.jar</systemPath><!--路径-->
         </dependency>
     </dependencies>
 
