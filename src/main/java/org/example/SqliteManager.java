@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * sqlite帮助类，直接创建该类示例，并调用相应的借口即可对sqlite数据库进行操作
+ * sqlite数据库管理类，直接创建该类示例，并调用相应的借口即可对sqlite数据库进行操作
  * 本类基于 sqlite jdbc v56
  */
-public class SqliteHelper {
+public class SqliteManager {
 
     private Connection connection;
     private Statement statement;
@@ -27,7 +27,7 @@ public class SqliteHelper {
      * 构造函数
      * @param dbFilePath sqlite db 文件路径
      */
-    public SqliteHelper(String dbFilePath) throws ClassNotFoundException, SQLException {
+    public SqliteManager(String dbFilePath) throws ClassNotFoundException, SQLException {
         this.dbFilePath = dbFilePath;
         connection = getConnection(dbFilePath);
         System.out.println("SQLite connection established");
@@ -43,7 +43,6 @@ public class SqliteHelper {
         // 1、加载驱动
         Class.forName("org.sqlite.JDBC");
         // 2、建立连接
-        // 注意：此处有巨坑，如果后面的 dbFilePath 路径太深或者名称太长，则建立连接会失败
         conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
         return conn;
     }
@@ -108,19 +107,6 @@ public class SqliteHelper {
         }
     }
 
-    /**
-     * 执行数据库更新 sql List
-     * @param sqls sql列表
-     */
-    public void executeUpdate(List<String> sqls) throws SQLException, ClassNotFoundException {
-        try {
-            for (String sql : sqls) {
-                getStatement().executeUpdate(sql);
-            }
-        } finally {
-            destroyed();
-        }
-    }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
         if (null == connection) connection = getConnection(dbFilePath);
@@ -156,10 +142,74 @@ public class SqliteHelper {
         }
     }
 
+
     /**
-     * 是否自动提交事务
+     * 将单条记录插入进数据库中
+     * @param record BillingRecord对象
+     * @throws SQLException
      */
-    public void setAutoCommit(Boolean status) throws SQLException {
-        connection.setAutoCommit(status);
+    public void insertBillingRecord(BillingRecord record) throws SQLException {
+        // 创建插入语句
+        String insertQuery = "INSERT INTO CashBook (date, name, amount, type) VALUES (?, ?, ?, ?)";
+
+        // 创建预处理语句对象
+        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+            // 设置参数
+            statement.setString(1, record.getDate());
+            statement.setString(2, record.getName());
+            statement.setDouble(3, record.getAmount());
+            statement.setInt(4, record.getType());
+
+            // 执行插入操作
+            statement.executeUpdate();
+        }
+    }
+
+    /**
+     * 向数据库查询所有账单记录
+     * @return 返回BillingRecord对象集合
+     * @throws SQLException
+     */
+    public List<BillingRecord> queryBillingRecords() throws SQLException, ClassNotFoundException {
+        List<BillingRecord> records = new ArrayList<>();
+
+        // 创建查询语句
+        String selectQuery = "SELECT * FROM CashBook";
+
+        // 创建查询语句的结果集
+        try (Statement statement = getStatement();
+             ResultSet resultSet = statement.executeQuery(selectQuery)) {
+
+            // 遍历结果集并将数据添加到列表中
+            while (resultSet.next()) {
+                String date = resultSet.getString("date");
+                String name = resultSet.getString("name");
+                double amount = resultSet.getDouble("amount");
+                int type = resultSet.getInt("type");
+
+                BillingRecord record = new BillingRecord(name, date, amount, type);
+                records.add(record);
+            }
+        }
+
+        return records;
+    }
+
+    /**
+     * 获取一个分类下的所有账单金额
+     * @param type 1收入 0支出
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public double getTotalAmount(int type) throws SQLException, ClassNotFoundException {
+        List<BillingRecord> records = queryBillingRecords();
+        double totalAmount = 0;
+        for(BillingRecord record: records){
+            if(record.getType()==type){
+                totalAmount += record.getAmount();
+            }
+        }
+        return totalAmount;
     }
 }
