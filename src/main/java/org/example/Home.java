@@ -4,15 +4,10 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -54,7 +49,7 @@ public class Home extends JFrame {
     private final JRadioButton rdoExpense;
 
     //数据库连接
-    private final SqliteManager sqliteManager = new SqliteManager("/data.db");
+    private final SqliteManager sqliteManager = new SqliteManager( System.getProperty("user.dir") + "/data/data.db");  // 数据库文件的相对路径);
 
     public Home() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         super("记账本");//调用父类构造函数
