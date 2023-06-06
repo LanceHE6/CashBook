@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -211,5 +210,29 @@ public class SqliteManager {
             }
         }
         return totalAmount;
+    }
+
+    /**
+     * 删除单行数据
+     * @param record BillingRecord
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public void deleteRecord(BillingRecord record) throws SQLException, ClassNotFoundException {
+        String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.getDate(),record.getName(),record.getAmount(),record.getType());
+        executeUpdate(deleteSql);
+    }
+
+    /**
+     * 删除多行数据
+     * @param records List<BillingRecord>
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public void deleteRecords(List<BillingRecord> records) throws SQLException, ClassNotFoundException {
+        for (BillingRecord record: records){
+            String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.getDate(),record.getName(),record.getAmount(),record.getType());
+            executeUpdate(deleteSql);
+        }
     }
 }

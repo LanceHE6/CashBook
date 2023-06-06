@@ -5,12 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="实现数据添加和显示功能">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChartFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Home.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Home.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SqliteHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,9 +54,14 @@
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "spring.configuration.checksum": "06aa3702ffacc9c4e2a75c89e57d8d38",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="应用程序.Main">
@@ -108,7 +115,12 @@
       <workItem from="1685504232118" duration="621000" />
       <workItem from="1685505058567" duration="10000" />
       <workItem from="1685577538507" duration="13755000" />
-      <workItem from="1685666068168" duration="10991000" />
+      <workItem from="1685666068168" duration="11051000" />
+      <workItem from="1685850281121" duration="91000" />
+      <workItem from="1685922423368" duration="7825000" />
+      <workItem from="1685930278944" duration="192000" />
+      <workItem from="1685930486811" duration="6387000" />
+      <workItem from="1686009014384" duration="11990000" />
     </task>
     <task id="LOCAL-00001" summary="Create repository">
       <created>1685411174055</created>
@@ -131,7 +143,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685586260029</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="实现数据添加和显示功能">
+      <created>1685677382115</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1685677382115</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

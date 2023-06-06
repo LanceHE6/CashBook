@@ -1,22 +1,46 @@
 package org.example;
 
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
  *  主界面 继承JFrame
  */
 public class Home extends JFrame {
+    /**
+     * 重写JTable类方法使Table不能直接编辑
+     */
+    static class  MyTable extends JTable{
+        public MyTable(DefaultTableModel tableModel){
+            super(tableModel);
+        }
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex){
+            return false;
+        }
+
+    }
     private final JTextField txtProject;//项目名称
     private final JTextField txtAmount;//项目金额
     private final DefaultTableModel tableModel;//表格
@@ -30,11 +54,13 @@ public class Home extends JFrame {
     private final JRadioButton rdoExpense;
 
     //数据库连接
-    private SqliteManager sqliteManager = new SqliteManager("/data.db");
+    private final SqliteManager sqliteManager = new SqliteManager("/data.db");
 
-    public Home(int windowWidth, int widowHeight) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+    public Home() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         super("记账本");//调用父类构造函数
-
+        Utils utils = new Utils();//工具类
+        int windowWidth=800;
+        int widowHeight=525;
         //数据库建表
         String createTable = "CREATE TABLE IF NOT EXISTS CashBook ( no  INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, name TEXT, amount REAL, type INTEGER);";
         sqliteManager.executeUpdate(createTable);
@@ -53,15 +79,19 @@ public class Home extends JFrame {
         tableModel = new DefaultTableModel(new String[]{"日期", "项目", "金额", "分类"}, 0);
         // 查询数据库并获取账单信息
         List<BillingRecord> billingRecords = sqliteManager.queryBillingRecords();
+        //依据日期排序
+        Collections.sort(billingRecords);
         //填充账单信息
         for (BillingRecord record : billingRecords) {
             Object[] rowData = {record.getDate(), record.getName(), record.getAmount(), record.getType()==1?"收入":"支出"};
             tableModel.addRow(rowData);
         }
         //依据表头创建表格
-        JTable table = new JTable(tableModel);
+        MyTable table = new MyTable(tableModel);
         //表格能够滑动
         JScrollPane scrollPane = new JScrollPane(table);
+        //设置表头不能移动
+        table.getTableHeader().setReorderingAllowed(false);
         scrollPane.setBounds(20,40,windowWidth-50,widowHeight-175);
         panel.add(scrollPane);
 
@@ -111,7 +141,7 @@ public class Home extends JFrame {
         panel.add(dateProject);
         txtDate = new JTextField();
         txtDate.setBounds(395,445,100,25);
-        txtDate.setToolTipText("xx/xx");
+        txtDate.setToolTipText("xxxx/xx/xx");
         panel.add(txtDate);
 
         JLabel lblCategory = new JLabel("项目分类：");
@@ -152,103 +182,143 @@ public class Home extends JFrame {
         UIManager.setLookAndFeel(new NimbusLookAndFeel());//主題
 
         //添加事件监听器
-        btnSubmit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //获取面板上的值
-                String project = txtProject.getText();
-                String amountString = txtAmount.getText();
-                String dateString = txtDate.getText();
-                boolean isIncome = rdoIncome.isSelected();
-                boolean isExpense = rdoExpense.isSelected();
-                //空值判断
-                if(project.isEmpty() || amountString.isEmpty() || (!isIncome&&!isExpense)){
-                    JOptionPane.showMessageDialog(null,"请填写完整数据");
+        btnSubmit.addActionListener(e -> {
+            //获取面板上的值
+            String project = txtProject.getText();
+            String amountString = txtAmount.getText();
+            String dateString = txtDate.getText();
+            boolean isIncome = rdoIncome.isSelected();
+            boolean isExpense = rdoExpense.isSelected();
+            //空值判断
+            if(project.isEmpty() || amountString.isEmpty() || (!isIncome&&!isExpense)){
+                JOptionPane.showMessageDialog(null,"请填写完整数据");
+                return;
+            }
+            //金额格式判断
+            if(!utils.isNumber(amountString) || (amountString.indexOf(".")>0&&amountString.length()-(amountString.indexOf(".")+1) > 2)){
+                JOptionPane.showMessageDialog(null,"金额格式不正确");
+                return;
+            }
+            if(dateString.isEmpty()){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
+                dateString = dateFormat.format(new Date());
+            }else {
+                dateString = utils.convertDateFormat(dateString);
+                if (dateString == null) {
+                    JOptionPane.showMessageDialog(null, "日期格式不符合要求");
                     return;
                 }
-                if(!isNumber(amountString)){
-                    JOptionPane.showMessageDialog(null,"非法金额输入");
-                    return;
-                }
-                if(dateString.isEmpty()){
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
-                    dateString = dateFormat.format(new Date());
-                }else {
-                    dateString = convertDateFormat(dateString);
-                    if (dateString == null) {
-                        JOptionPane.showMessageDialog(null, "日期格式不符合要求");
-                        return;
-                    }
+            }
+            try {
+                // 将金额字符串转换为浮点数
+                double amount = Double.parseDouble(amountString);
+                // 根据选择的收入或支出设置类型值
+                int type = isIncome ? 1 : 0;
+
+                // 插入数据到数据库中
+                BillingRecord billingRecord = new BillingRecord(project,dateString,amount,type);
+                sqliteManager.insertBillingRecord(billingRecord);
+
+                // 清空输入框内容
+                txtProject.setText("");
+                txtAmount.setText("");
+                txtDate.setText("");
+                categoryGroup.clearSelection();
+
+               // 刷新表格数据
+                refreshData();
+
+                //JOptionPane.showMessageDialog(null, "项目提交成功");
+            } catch (NumberFormatException | SQLException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "提交项目时出错: " + ex.getMessage());
+            }
+        });
+
+        btnDelete.addActionListener(e -> {
+            int index1 = table.getSelectedRow();
+            int[] index2 = table.getSelectedRows();//获取选中的行
+            if(index1==-1){
+                JOptionPane.showMessageDialog(null, "请选中需要删除的行");
+                return;
+            }
+            //如果选中多行
+            if(index2.length>1){
+                List<BillingRecord> deleteRecords = new ArrayList<>();
+                for(int row:index2){
+                    String name = (String) table.getValueAt(row,1);
+                    String date = (String) table.getValueAt(row,0);
+                    double amount = (double) table.getValueAt(row, 2);
+                    int type = table.getValueAt(index1,3)=="收入"?1:0;
+                    BillingRecord record = new BillingRecord(name,date,amount,type);
+                    deleteRecords.add(record);
                 }
                 try {
-                    // 将金额字符串转换为浮点数
-                    double amount = Double.parseDouble(amountString);
-                    // 根据选择的收入或支出设置类型值
-                    int type = isIncome ? 1 : 0;
 
-                    // 插入数据到数据库中
-                    BillingRecord billingRecord = new BillingRecord(project,dateString,amount,type);
-                    sqliteManager.insertBillingRecord(billingRecord);
+                    int userChoose = JOptionPane.showConfirmDialog(null,"是否删除选中的行");
+                    if(userChoose == JOptionPane.YES_OPTION){
+                        sqliteManager.deleteRecords(deleteRecords);
+                    }else {
+                        return;
+                    }
 
-                    // 清空输入框内容
-                    txtProject.setText("");
-                    txtAmount.setText("");
-                    txtDate.setText("");
-                    categoryGroup.clearSelection();
-
-                   // 刷新表格数据
+                } catch (SQLException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null,"删除失败");
+                    throw new RuntimeException(ex);
+                }
+                JOptionPane.showMessageDialog(null,"删除成功");
+                try {
                     refreshData();
-
-                    //JOptionPane.showMessageDialog(null, "项目提交成功");
-                } catch (NumberFormatException | SQLException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, "提交项目时出错: " + ex.getMessage());
+                    return;
+                } catch (SQLException | ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
 
+            String name = (String) table.getValueAt(index1,1);
+            String date = (String) table.getValueAt(index1,0);
+            double amount = (double) table.getValueAt(index1, 2);
+            int type = table.getValueAt(index1,3)=="收入"?1:0;
+            BillingRecord deleteRecord = new BillingRecord(name, date, amount, type);
 
-        });
-    }
+            int userChoose = JOptionPane.showConfirmDialog(null,"是否删除选中的行");
+            if(userChoose == JOptionPane.YES_OPTION){
+                try {
+                    sqliteManager.deleteRecord(deleteRecord);
 
-    /**
-     * 判断字符串是否为数字
-     * @param str 目标字符串
-     * @return boolean
-     */
-    private static boolean isNumber(String str){
-
-        Pattern pattern = Pattern.compile("[0-9]*\\.?[0-9]+");
-        Matcher isNum = pattern.matcher(str);
-        if (!isNum.matches()) {
-            return false;
-        }
-        return true;
-
-
-    }
-
-    /**
-     * 将用户输入的字符串格式化，非指定格式则返回null
-     * @param dateString 目标字符串
-     * @return xx/xx
-     */
-    private static String convertDateFormat(String dateString) {
-        try {
-
-            // 拆分用户输入的日期
-            String[] parts = dateString.split("/");
-            int monthValue = Integer.parseInt(parts[0]);
-            int dayValue = Integer.parseInt(parts[1]);
-
-            // 检查月份和日期是否在有效范围内
-            if (monthValue < 1 || monthValue > 12 || dayValue < 1 || dayValue > 31) {
-                return null; // 无效的日期
+                } catch (SQLException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null,"删除失败");
+                    throw new RuntimeException(ex);
+                }
+                JOptionPane.showMessageDialog(null,"删除成功");
+                try {
+                    refreshData();
+                } catch (SQLException | ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
-            // 构建日期字符串
-            return String.format("%02d/%02d", monthValue, dayValue);
-        } catch (NumberFormatException e) {
-            return null; // 格式错误
-        }
+        });
+
+        btnExport.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showDialog(null,"选择为Excel保存路径");
+            if(result == JFileChooser.APPROVE_OPTION) {
+                String savePath = String.valueOf(fileChooser.getSelectedFile());
+                writeExcel(savePath);
+            }
+        });
+
+        btnChart.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              try {
+                  new ChartFrame(sqliteManager.queryBillingRecords());
+              } catch (SQLException | ClassNotFoundException ex) {
+                  throw new RuntimeException(ex);
+              }
+          }
+      });
     }
 
     /**
@@ -261,6 +331,8 @@ public class Home extends JFrame {
         tableModel.setRowCount(0);
         // 查询数据库并获取账单信息
         List<BillingRecord> billingRecords = sqliteManager.queryBillingRecords();
+        // 排序
+        Collections.sort(billingRecords);
         //填充账单信息
         for (BillingRecord record : billingRecords) {
             Object[] rowData = {record.getDate(), record.getName(), record.getAmount(), record.getType()==1?"收入":"支出"};
@@ -276,4 +348,56 @@ public class Home extends JFrame {
         lblBalance.setText(""+(totalIncome-totalExpense)+"元");
 
     }
+
+    /**
+     * 写入Excel文件
+     * @param savePath 文件保存路径
+     */
+    private void writeExcel(String savePath){
+        //开始写入excel,创建模型文件头
+        String[] titleA = {"日期","项目","金额","类型"};
+        //创建Excel文件，B库CD表文件
+        String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-hhmm"));
+        File fileA = new File(savePath+"\\"+nowTime+".xls");
+        System.out.println(savePath+"/"+nowTime+".xls");
+        if(fileA.exists()){
+            //如果文件存在就删除
+            fileA.delete();
+        }
+        try {
+            fileA.createNewFile();
+            //创建工作簿
+            WritableWorkbook workbookA = Workbook.createWorkbook(fileA);
+            //创建sheet
+            WritableSheet sheetA = workbookA.createSheet("sheet1", 0);
+            Label labelA = null;
+            //设置列名
+            for (int i = 0; i < titleA.length; i++) {
+                labelA = new Label(i,0,titleA[i]);
+                sheetA.addCell(labelA);
+            }
+            //获取数据源
+            List<BillingRecord> records = sqliteManager.queryBillingRecords();
+            int column = 1;
+            for (BillingRecord record: records) {
+                labelA = new Label(0,column,record.getDate());
+                sheetA.addCell(labelA);
+                labelA = new Label(1,column,record.getName());
+                sheetA.addCell(labelA);
+                labelA = new Label(2,column,String.valueOf(record.getAmount()));
+                sheetA.addCell(labelA);
+                labelA = new Label(3,column,record.getType() == 1? "收入": "支出");
+                sheetA.addCell(labelA);
+                column ++;
+            }
+            workbookA.write();    //写入数据
+            workbookA.close();  //关闭连接
+            JOptionPane.showMessageDialog(null, "导出%s成功".formatted(savePath+"\\"+nowTime+".xls"));
+            System.out.println("成功写入文件");
+
+        } catch (Exception e) {
+            System.out.printf("写入文件失败：%s",e);
+        }
+    }
 }
+
