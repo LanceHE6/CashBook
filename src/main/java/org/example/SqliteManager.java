@@ -1,8 +1,5 @@
 package org.example;
 
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -47,63 +44,15 @@ public class SqliteManager {
     }
 
     /**
-     * 执行sql查询
-     * @param sql sql select 语句
-     * @param rse 结果集处理类对象
-     * @return 查询结果
-     */
-    public <T> T executeQuery(String sql, ResultSetExtractor<T> rse) throws SQLException, ClassNotFoundException {
-        try {
-            resultSet = getStatement().executeQuery(sql);
-            return rse.extractData(resultSet);
-        } finally {
-            destroyed();
-        }
-    }
-
-    /**
-     * 执行select查询，返回结果列表
-     *
-     * @param sql sql select 语句
-     * @param rm 结果集的行数据处理类对象
-     */
-    public <T> List<T> executeQuery(String sql, RowMapper<T> rm) throws SQLException, ClassNotFoundException {
-        List<T> rsList = new ArrayList<>();
-        try {
-            resultSet = getStatement().executeQuery(sql);
-            while (resultSet.next()) {
-                rsList.add(rm.mapRow(resultSet, resultSet.getRow()));
-            }
-        } finally {
-            destroyed();
-        }
-        return rsList;
-    }
-
-    /**
      * 执行数据库更新sql语句
-     * @return 更新行数
      */
-    public int executeUpdate(String sql) throws SQLException, ClassNotFoundException {
+    public void executeUpdate(String sql) throws SQLException, ClassNotFoundException {
         try {
-            return getStatement().executeUpdate(sql);
+            getStatement().executeUpdate(sql);
         } finally {
             destroyed();
         }
 
-    }
-
-    /**
-     * 执行多个sql更新语句
-     */
-    public void executeUpdate(String...sqls) throws SQLException, ClassNotFoundException {
-        try {
-            for (String sql : sqls) {
-                getStatement().executeUpdate(sql);
-            }
-        } finally {
-            destroyed();
-        }
     }
 
 
@@ -145,7 +94,6 @@ public class SqliteManager {
     /**
      * 将单条记录插入进数据库中
      * @param record BillingRecord对象
-     * @throws SQLException
      */
     public void insertBillingRecord(BillingRecord record) throws SQLException {
         // 创建插入语句
@@ -154,20 +102,28 @@ public class SqliteManager {
         // 创建预处理语句对象
         try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
             // 设置参数
-            statement.setString(1, record.getDate());
-            statement.setString(2, record.getName());
-            statement.setDouble(3, record.getAmount());
-            statement.setInt(4, record.getType());
+            statement.setString(1, record.date());
+            statement.setString(2, record.name());
+            statement.setDouble(3, record.amount());
+            statement.setInt(4, record.type());
 
             // 执行插入操作
             statement.executeUpdate();
+        }
+    }
+    /**
+     * 将多条记录插入进数据库中
+     * @param records BillingRecord对象列表
+     */
+    public void insertBillingRecords(List<BillingRecord> records) throws SQLException {
+        for (BillingRecord record: records) {
+            insertBillingRecord(record);
         }
     }
 
     /**
      * 向数据库查询所有账单记录
      * @return 返回BillingRecord对象集合
-     * @throws SQLException
      */
     public List<BillingRecord> queryBillingRecords() throws SQLException, ClassNotFoundException {
         List<BillingRecord> records = new ArrayList<>();
@@ -197,16 +153,15 @@ public class SqliteManager {
     /**
      * 获取一个分类下的所有账单金额
      * @param type 1收入 0支出
-     * @return
-     * @throws SQLException
-     * @throws ClassNotFoundException
+     * @return totalAmount
+     *
      */
     public double getTotalAmount(int type) throws SQLException, ClassNotFoundException {
         List<BillingRecord> records = queryBillingRecords();
         double totalAmount = 0;
         for(BillingRecord record: records){
-            if(record.getType()==type){
-                totalAmount += record.getAmount();
+            if(record.type()==type){
+                totalAmount += record.amount();
             }
         }
         return totalAmount;
@@ -215,23 +170,21 @@ public class SqliteManager {
     /**
      * 删除单行数据
      * @param record BillingRecord
-     * @throws SQLException
-     * @throws ClassNotFoundException
+     *
      */
     public void deleteRecord(BillingRecord record) throws SQLException, ClassNotFoundException {
-        String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.getDate(),record.getName(),record.getAmount(),record.getType());
+        String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.date(),record.name(),record.amount(),record.type());
         executeUpdate(deleteSql);
     }
 
     /**
      * 删除多行数据
      * @param records List<BillingRecord>
-     * @throws SQLException
-     * @throws ClassNotFoundException
+     *
      */
     public void deleteRecords(List<BillingRecord> records) throws SQLException, ClassNotFoundException {
         for (BillingRecord record: records){
-            String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.getDate(),record.getName(),record.getAmount(),record.getType());
+            String deleteSql = "Delete From CashBook Where date=\"%s\" and name=\"%s\" and amount=%f and type=%d;".formatted(record.date(),record.name(),record.amount(),record.type());
             executeUpdate(deleteSql);
         }
     }
