@@ -15,6 +15,9 @@ public class ChartFrame extends JFrame{
     public ChartFrame(List<BillingRecord> billingRecords) {
         setTitle("查看图表");
         setBounds(400, 300, 600,500);
+        //图标
+        ImageIcon imageIcon = new ImageIcon(System.getProperty("user.dir") + "/data/chartIcon.png");
+        setIconImage(imageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
 
         Utils utils = new Utils();
         Map<String, List<BillingRecord>> groupedRecords = utils.recordsGrouping(billingRecords);
@@ -38,10 +41,10 @@ public class ChartFrame extends JFrame{
             double expenseTotal = 0.0;
 
             for (BillingRecord record : records) {
-                if (record.getType() == 1) {
-                    incomeTotal += record.getAmount();
+                if (record.type() == 1) {
+                    incomeTotal += record.amount();
                 } else {
-                    expenseTotal += record.getAmount();
+                    expenseTotal += record.amount();
                 }
             }
             dataset.addValue(incomeTotal, "收入", yearMonth);
