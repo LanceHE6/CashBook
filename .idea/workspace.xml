@@ -9,19 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="数据库改为相对路径">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/CashBook_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/JTableFilterTextField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChartFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ChartFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Home.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Home.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" afterDir="false" />
-    </list>
+    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="图标" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -116,7 +104,7 @@
       <workItem from="1685930278944" duration="192000" />
       <workItem from="1685930486811" duration="6387000" />
       <workItem from="1686009014384" duration="13722000" />
-      <workItem from="1686095388683" duration="10484000" />
+      <workItem from="1686095388683" duration="10882000" />
     </task>
     <task id="LOCAL-00001" summary="Create repository">
       <created>1685411174055</created>
@@ -160,7 +148,63 @@
       <option name="project" value="LOCAL" />
       <updated>1686023411396</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="改为记录类">
+      <created>1686106124077</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106124077</updated>
+    </task>
+    <task id="LOCAL-00008" summary="新增图标">
+      <created>1686106157139</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106157139</updated>
+    </task>
+    <task id="LOCAL-00009" summary="基本实现所有功能">
+      <created>1686106173855</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106173855</updated>
+    </task>
+    <task id="LOCAL-00010" summary="表格数据过滤类">
+      <created>1686106192374</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106192374</updated>
+    </task>
+    <task id="LOCAL-00011" summary="基本实现所有功能">
+      <created>1686106202534</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106202534</updated>
+    </task>
+    <task id="LOCAL-00012" summary="优化部分代码，新增多项数据插入">
+      <created>1686106233879</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106233879</updated>
+    </task>
+    <task id="LOCAL-00013" summary="xml更新">
+      <created>1686106252728</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106252728</updated>
+    </task>
+    <task id="LOCAL-00014" summary="图标">
+      <created>1686106276421</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1686106276421</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -171,8 +215,14 @@
     <MESSAGE value="添加依赖和数据库类" />
     <MESSAGE value="基本UI实现" />
     <MESSAGE value="实现数据添加和显示功能" />
-    <MESSAGE value="基本实现所有功能" />
     <MESSAGE value="数据库改为相对路径" />
-    <option name="LAST_COMMIT_MESSAGE" value="数据库改为相对路径" />
+    <MESSAGE value="改为记录类" />
+    <MESSAGE value="新增图标" />
+    <MESSAGE value="表格数据过滤类" />
+    <MESSAGE value="基本实现所有功能" />
+    <MESSAGE value="优化部分代码，新增多项数据插入" />
+    <MESSAGE value="xml更新" />
+    <MESSAGE value="图标" />
+    <option name="LAST_COMMIT_MESSAGE" value="图标" />
   </component>
 </project>

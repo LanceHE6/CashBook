@@ -60,7 +60,7 @@ public class Home extends JFrame {
         int windowWidth=800;
         int widowHeight=550;
         //图标
-        ImageIcon imageIcon = new ImageIcon(System.getProperty("user.dir") + "/data/homeIcon.png");
+        ImageIcon imageIcon = new ImageIcon(System.getProperty("user.dir") + "/icons/homeIcon.png");
         setIconImage(imageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
 
         //数据库建表

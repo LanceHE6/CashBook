@@ -22,7 +22,7 @@ public class JTableFilterTextField extends JTextField implements KeyListener {
     public JTableFilterTextField() {
         this.addKeyListener(this);
         //获取当前路径下的图片
-        icon = new ImageIcon(System.getProperty("user.dir") + "/data/searchIcon.png");
+        icon = new ImageIcon(System.getProperty("user.dir") + "/icons/searchIcon.png");
         Insets insets = new Insets(0, 24, 0, 0);
         //设置文本输入距左边24
         this.setMargin(insets);

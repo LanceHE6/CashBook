@@ -16,7 +16,7 @@ public class ChartFrame extends JFrame{
         setTitle("查看图表");
         setBounds(400, 300, 600,500);
         //图标
-        ImageIcon imageIcon = new ImageIcon(System.getProperty("user.dir") + "/data/chartIcon.png");
+        ImageIcon imageIcon = new ImageIcon(System.getProperty("user.dir") + "/icons/chartIcon.png");
         setIconImage(imageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
 
         Utils utils = new Utils();
