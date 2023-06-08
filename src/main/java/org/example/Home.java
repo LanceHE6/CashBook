@@ -4,23 +4,20 @@ import jxl.Workbook;
 import jxl.Sheet;
 import jxl.Cell;
 import jxl.read.biff.BiffException;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -94,6 +91,7 @@ public class Home extends JFrame {
 
     public Home() throws ClassNotFoundException, SQLException {
         super("记账本");//调用父类构造函数
+
         Utils utils = new Utils();//工具类
         int windowWidth=800;
         int widowHeight=550;
@@ -159,8 +157,6 @@ public class Home extends JFrame {
         table.getTableHeader().setReorderingAllowed(false);
         scrollPane.setBounds(20,40,windowWidth-50,widowHeight-200);
         panel.add(scrollPane);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
         //筛选框
         JLabel filterProject = new JLabel("筛选:");
         filterProject.setBounds(20,0,50,35);
@@ -299,7 +295,7 @@ public class Home extends JFrame {
                 txtDate.setText("");
                 categoryGroup.clearSelection();
 
-               // 刷新表格数据
+                // 刷新表格数据
                 refreshData();
 
             } catch (NumberFormatException | SQLException | ClassNotFoundException ex) {
@@ -379,7 +375,7 @@ public class Home extends JFrame {
             if(result == JFileChooser.APPROVE_OPTION) {
                 String savePath = String.valueOf(fileChooser.getSelectedFile());
                 try {
-                    writeExcel(savePath, sqliteManager.queryBillingRecords());
+                    utils.writeExcel(savePath, sqliteManager.queryBillingRecords());
                 } catch (SQLException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -407,7 +403,7 @@ public class Home extends JFrame {
                 int result = fileChooser.showDialog(null,"选择为Excel保存路径");
                 if(result == JFileChooser.APPROVE_OPTION) {
                     String savePath = String.valueOf(fileChooser.getSelectedFile());
-                    writeExcel(savePath, exportRecords);
+                    utils.writeExcel(savePath, exportRecords);
                 }
             }
         });
@@ -437,26 +433,11 @@ public class Home extends JFrame {
             });
             int result = fileChooser.showDialog(null,"选择Excel文件");
             if(result == JFileChooser.APPROVE_OPTION) {
-                String file = String.valueOf(fileChooser.getSelectedFile());
                 try {
-                    List<BillingRecord> exportRecords = new ArrayList<>();
-                    FileInputStream fis = new FileInputStream(file);
-                    //StringBuilder sb = new StringBuilder();
-                    Workbook rwb = Workbook.getWorkbook(fis);
-                    Sheet rs = rwb.getSheet(0);
-                    for (int i = 1; i < rs.getRows(); i++) {
-                        Cell[] cells = rs.getRow(i);
-
-                        String date = cells[0].getContents();
-                        String name = cells[1].getContents();
-                        double amount = Double.parseDouble(cells[2].getContents());
-                        int type = Objects.equals(cells[3].getContents(), "收入") ? 1 : 0;
-
-                        exportRecords.add(new BillingRecord(name, date, amount, type));
-
-                    }
-                    sqliteManager.insertBillingRecords(exportRecords);
-                } catch (IOException | BiffException | SQLException ex) {
+                String file = String.valueOf(fileChooser.getSelectedFile());
+                List<BillingRecord> exportRecords = utils.importExcel(file);
+                sqliteManager.insertBillingRecords(exportRecords);
+                } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "导入失败:\n%s".formatted(ex));
                     throw new RuntimeException(ex);
                 }
@@ -496,54 +477,4 @@ public class Home extends JFrame {
 
     }
 
-    /**
-     * 写入Excel文件
-     * @param savePath 文件保存路径
-     */
-    private void writeExcel(String savePath, List<BillingRecord> records){
-        //开始写入excel,创建模型文件头
-        String[] titleA = {"日期","项目","金额","类型"};
-        //创建Excel文件，B库CD表文件
-        String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-hhmm"));
-        File fileA = new File(savePath+"\\"+nowTime+".xls");
-        System.out.println(savePath+"/"+nowTime+".xls");
-        if(fileA.exists()){
-            //如果文件存在就删除
-            //noinspection ResultOfMethodCallIgnored
-            fileA.delete();
-        }
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            fileA.createNewFile();
-            //创建工作簿
-            WritableWorkbook workbookA = Workbook.createWorkbook(fileA);
-            //创建sheet
-            WritableSheet sheetA = workbookA.createSheet("sheet1", 0);
-            Label labelA;
-            //设置列名
-            for (int i = 0; i < titleA.length; i++) {
-                labelA = new Label(i,0,titleA[i]);
-                sheetA.addCell(labelA);
-            }
-            int column = 1;
-            for (BillingRecord record: records) {
-                labelA = new Label(0,column,record.date());
-                sheetA.addCell(labelA);
-                labelA = new Label(1,column,record.name());
-                sheetA.addCell(labelA);
-                labelA = new Label(2,column,String.valueOf(record.amount()));
-                sheetA.addCell(labelA);
-                labelA = new Label(3,column,record.type() == 1? "收入": "支出");
-                sheetA.addCell(labelA);
-                column ++;
-            }
-            workbookA.write();    //写入数据
-            workbookA.close();  //关闭连接
-            JOptionPane.showMessageDialog(null, "导出%s成功".formatted(savePath+"\\"+nowTime+".xls"));
-            System.out.println("成功写入文件");
-
-        } catch (Exception e) {
-            System.out.printf("写入文件失败：%s",e);
-        }
-    }
 }

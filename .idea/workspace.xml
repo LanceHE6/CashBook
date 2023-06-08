@@ -9,10 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="更改图标资源位置">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/LayeredPanel.java" afterDir="false" />
+    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="新增主页背景">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Home.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Home.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +109,7 @@
       <workItem from="1685930486811" duration="6387000" />
       <workItem from="1686009014384" duration="13722000" />
       <workItem from="1686095388683" duration="13066000" />
-      <workItem from="1686184031857" duration="5648000" />
+      <workItem from="1686184031857" duration="12153000" />
     </task>
     <task id="LOCAL-00001" summary="Create repository">
       <created>1685411174055</created>
@@ -223,7 +223,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686106537268</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="新增主页背景">
+      <created>1686189839733</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1686189839733</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +250,7 @@
     <MESSAGE value="xml更新" />
     <MESSAGE value="图标" />
     <MESSAGE value="更改图标资源位置" />
-    <option name="LAST_COMMIT_MESSAGE" value="更改图标资源位置" />
+    <MESSAGE value="新增主页背景" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增主页背景" />
   </component>
 </project>
