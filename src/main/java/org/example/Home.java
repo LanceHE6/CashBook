@@ -8,10 +8,12 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,8 +39,44 @@ public class Home extends JFrame {
         public boolean isCellEditable(int rowIndex, int columnIndex){
             return false;
         }
+        //让表格变透明
+        @Override
+        protected void paintComponent(Graphics g) {
+            // 设置透明背景
+            g.setColor(new Color(255, 255, 255, 0));
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            // 绘制表格内容
+            super.paintComponent(g);
+        }
 
     }
+
+    /**
+     * 自定义主面板，具有指定的背景图片
+     */
+    private static class MainPanel extends JPanel {
+        private BufferedImage backgroundImage;
+
+        public MainPanel() {
+            super();
+            setLayout(null);
+            try {
+                // 读取背景图片
+                backgroundImage = ImageIO.read(new File(System.getProperty("user.dir") + "/icons/homeBg.jfif"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            // 绘制背景图片
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
     private final JTextField txtProject;//项目名称
     private final JTextField txtAmount;//项目金额
     private final DefaultTableModel tableModel;//表格
@@ -97,10 +135,10 @@ public class Home extends JFrame {
         setJMenuBar(jMenuBar);
 
         //创建各种组件
-        JPanel panel = new JPanel(null);//总容器 绝对布局
+        MainPanel panel = new MainPanel();//总容器 绝对布局
+        panel.setLayout(null);
         //设置容器边框
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         //设置表格
         tableModel = new DefaultTableModel(new String[]{"日期", "项目", "金额", "分类"}, 0);
         // 查询数据库并获取账单信息
@@ -121,7 +159,8 @@ public class Home extends JFrame {
         table.getTableHeader().setReorderingAllowed(false);
         scrollPane.setBounds(20,40,windowWidth-50,widowHeight-200);
         panel.add(scrollPane);
-
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
         //筛选框
         JLabel filterProject = new JLabel("筛选:");
         filterProject.setBounds(20,0,50,35);
@@ -190,9 +229,11 @@ public class Home extends JFrame {
 
         rdoIncome = new JRadioButton("收入");
         rdoIncome.setBounds(570,440,50,35);
+        rdoIncome.setOpaque(false);
         panel.add(rdoIncome);
         rdoExpense = new JRadioButton("支出");
         rdoExpense.setBounds(620,440,50,35);
+        rdoExpense.setOpaque(false);
         panel.add(rdoExpense);
         // 设置单选框组
         ButtonGroup categoryGroup = new ButtonGroup();
