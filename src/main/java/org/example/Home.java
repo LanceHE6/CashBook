@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -104,10 +106,13 @@ public class Home extends JFrame {
         JMenuBar jMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("文件");
         JMenu windowMenu = new JMenu("窗口");
+        JMenu aboutMenu = new JMenu("关于");
         jMenuBar.add(fileMenu);
         jMenuBar.add(windowMenu);
+        jMenuBar.add(aboutMenu);
         fileMenu.setFont(new Font("simhei",Font.BOLD,14));
         windowMenu.setFont(new Font("simhei",Font.BOLD,14));
+        aboutMenu.setFont(new Font("simhei",Font.BOLD,14));
         JMenuItem exportExcelAll = new JMenuItem("导出全部为Excel文件");
         exportExcelAll.setFont(new Font("simhei",Font.PLAIN,14));
         JMenuItem exportExcelSelected = new JMenuItem("导出选中为Excel文件");
@@ -116,11 +121,14 @@ public class Home extends JFrame {
         importExcel.setFont(new Font("simhei",Font.PLAIN,14));
         JMenuItem chart = new JMenuItem("查看图表");
         chart.setFont(new Font("simhei",Font.PLAIN,14));
+        JMenuItem aboutUs = new JMenuItem("关于我们");
+        aboutUs.setFont(new Font("simhei",Font.PLAIN,14));
 
         fileMenu.add(importExcel);
         fileMenu.add(exportExcelAll);
         fileMenu.add(exportExcelSelected);
         windowMenu.add(chart);
+        aboutMenu.add(aboutUs);
 
         setJMenuBar(jMenuBar);
 
@@ -439,6 +447,13 @@ public class Home extends JFrame {
                 } catch (SQLException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
+            }
+        });
+
+        aboutUs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "项目地址:\nhttps://github.com/LanceHE6/CashBook\nBy 何明礼 张心 黎杰");
             }
         });
     }
