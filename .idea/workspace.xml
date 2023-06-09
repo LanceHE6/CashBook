@@ -9,9 +9,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="优化代码结构">
+    <list default="true" id="4c31e9d7-dc65-4c38-93ab-ecfa91d8669a" name="变更" comment="新增关于菜单">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/BillingRecord.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Home.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Home.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SqliteManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +118,7 @@
       <workItem from="1686211025920" duration="18000" />
       <workItem from="1686233276128" duration="1184000" />
       <workItem from="1686234570377" duration="170000" />
-      <workItem from="1686268172301" duration="982000" />
+      <workItem from="1686268172301" duration="4452000" />
     </task>
     <task id="LOCAL-00001" summary="Create repository">
       <created>1685411174055</created>
@@ -251,7 +253,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686233539190</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="新增关于菜单">
+      <created>1686269234924</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1686269234924</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,6 +283,7 @@
     <MESSAGE value="新增主页背景" />
     <MESSAGE value="优化结构" />
     <MESSAGE value="优化代码结构" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化代码结构" />
+    <MESSAGE value="新增关于菜单" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增关于菜单" />
   </component>
 </project>

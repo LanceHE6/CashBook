@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * sqlite数据库管理类，直接创建该类示例，并调用相应的借口即可对sqlite数据库进行操作
+ * sqlite数据库管理类，直接创建该类示例，并调用相应的接口即可对sqlite数据库进行操作
  * 本类基于 sqlite jdbc v56
  */
 public class SqliteManager {

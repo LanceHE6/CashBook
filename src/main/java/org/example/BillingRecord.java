@@ -32,6 +32,10 @@ public record BillingRecord(String name, String date, double amount, int type) i
         return 0;
     }
 
+    /**
+     * 获取数据的年份和月份
+     * @return yy-MM 23-06
+     */
     public String getYearMonth() {
         DateFormat inputFormat = new SimpleDateFormat("yy/MM/dd");
         DateFormat outputFormat = new SimpleDateFormat("yy-MM");

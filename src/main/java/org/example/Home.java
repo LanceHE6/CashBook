@@ -5,8 +5,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -450,12 +448,7 @@ public class Home extends JFrame {
             }
         });
 
-        aboutUs.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "项目地址:\nhttps://github.com/LanceHE6/CashBook\nBy 何明礼 张心 黎杰");
-            }
-        });
+        aboutUs.addActionListener(e -> JOptionPane.showMessageDialog(null, "项目地址:\nhttps://github.com/LanceHE6/CashBook\nBy 何明礼 张心 黎杰"));
     }
 
     /**
